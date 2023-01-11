@@ -1,0 +1,197 @@
+// function shuffle(array) {
+  //   array.sort(() => Math.random() - 0.5);
+  // }
+
+  // function checkIsEnd(bettingLine) {
+  //   var k = 0
+  //   bettingLine.forEach((e) => {
+  //     if (e[0] === 0) {
+  //       k = k + 1
+  //     }
+  //   })
+  //   if (k === 0) {
+  //     return true
+  //   } else {
+  //     return false
+  //   }
+  // }
+
+  // function freeFlopBetting() {
+  //   var bettingLine = [[0, 0], [0, 0], [0, 0]]
+
+  //   var toAction = (dealer + 3) % player_num
+
+  //   var sb = (dealer + 4) % player_num
+  //   var bb = (dealer + 5) % player_num
+
+  //   bettingLine[sb][1] = 200
+  //   bettingLine[bb][1] = 400
+
+
+
+  //   while (!checkIsEnd(bettingLine)) {
+  //     if (toAction === 0) { setTurnOfP1(true) }
+  //     else if (toAction === 1) { setTurnOfP2(true) }
+  //     else if (toAction === 2) { setTurnOfP3(true) }
+
+  //     var maxOfBettingLine = Math.max(bettingLine[0][1],bettingLine[1][1],bettingLine[2][1])
+
+  //     pa = playersAction[toAction]
+
+  //     if(maxOfBettingLine>pa ){
+  //       console.log("잘못입력하였습니다.")
+  //     }
+
+
+
+
+
+
+
+  //   }
+  // }
+
+
+  // const [board, setBoard] = useState([0, 0, 0, 0, 0])
+  // const [boardState, setBoardState] = useState("free-flop");
+
+  // const player_num = 3
+  // const [player1_hand, setPlayer1_hand] = useState([0, 0])
+  // const [player2_hand, setPlayer2_hand] = useState([0, 0])
+  // const [player3_hand, setPlayer3_hand] = useState([0, 0])
+
+  // const [P1Stack, setP1Stack] = useState(10000);
+  // const [P2Stack, setP2Stack] = useState(10000);
+  // const [P3Stack, setP3Stack] = useState(10000);
+
+  // const [P1Action, setP1Action] = useState();
+  // const [P2Action, setP2Action] = useState();
+  // const [P3Action, setP3Action] = useState();
+
+  // const [turnOfP1, setTurnOfP1] = useState(false);
+  // const [turnOfP2, setTurnOfP2] = useState(false);
+  // const [turnOfP3, setTurnOfP3] = useState(false);
+
+  // const [dealer, setdealer] = useState(2)
+  // const [pot, setpot] = useState(0)
+
+  // var playersAction = [P1Action,P2Action,P3Action]
+
+
+  // useEffect(() => {
+  //   const deck = ["AC", "2C", "3C", "4C", "5C", "6C", "7C", "8C", "9C", "10C", "JC", "QC", "KC", "AD", "2D", "3D", "4D", "5D", "6D", "7D", "8D", "9D", "10D", "JD", "QD", "KD", "AH", "2H", "3H", "4H", "5H", "6H", "7H", "8H", "9H", "10H", "JH", "QH", "KH", "AS", "2S", "3S", "4S", "5S", "6S", "7S", "8S", "9S", "10S", "JS", "QS", "KS"]
+  //   shuffle(deck);
+  //   // console.log(deck)
+
+  //   setPlayer1_hand((c) => {
+  //     return c.map(() => { return deck.pop() })
+  //   })
+  //   setPlayer2_hand((c) => {
+  //     return c.map(() => { return deck.pop() })
+  //   })
+  //   setPlayer3_hand((c) => {
+  //     return c.map(() => { return deck.pop() })
+  //   })
+
+  //   setBoard((c) => {
+  //     return c.map(() => { return deck.pop() })
+  //   })
+  //   // console.log(player1_hand)
+  //   freeFlopBetting()
+  //   flopBetting()
+  // }, [])
+
+
+
+
+  // const onClick1 = () => {
+  //   setBoardState("flop")
+  // }
+  // const onClick2 = () => {
+  //   setBoardState("turn")
+  // }
+  // const onClick3 = () => {
+  //   setBoardState("rever")
+  // }
+
+
+
+
+
+
+  // const onChangeP1 = (event) => {
+  //   setP1Action(event.target.value);
+  // }
+  // const onClickP1 = () => {
+  //   setP1Stack(c => c - P1Action)
+  // }
+
+  // const onChangeP2 = (event) => {
+  //   setP2Action(event.target.value);
+  // }
+  // const onClickP2 = () => {
+  //   setP2Stack(c => c - P2Action)
+  // }
+
+  // const onChangeP3 = (event) => {
+  //   setP3Action(event.target.value);
+  // }
+  // const onClickP3 = () => {
+  //   setP3Stack(c => c - P3Action)
+  // }
+
+// <Board boardState={boardState} board={board} />
+//       <button onClick={onClick1}>Click</button>
+//       <button onClick={onClick2}>Click</button>
+
+//       <button onClick={onClick3}>Click</button>
+//       <div>
+//         <h3>현택</h3>
+//         <span>스택: </span>
+//         <span>{P1Stack} </span>
+//         <ul>
+//           {player1_hand.map((card) => {
+//             return <li key={card}>{card}</li>
+//           })}
+//         </ul>
+//         <input onChange={onChangeP1} value={P1Action} disabled={!turnOfP1}></input>
+
+//         <button onClick={onClickP1}>확인</button>
+
+//         {dealer === 0 ? <div>dealer</div> : null}
+
+//       </div>
+
+
+
+//       <div>
+//         <h3>재훈</h3>
+//         <span>스택: </span>
+//         <span>{P2Stack} </span>
+//         <ul>
+//           {player2_hand.map((card) => {
+//             return <li key={card}>{card}</li>
+//           })}
+//         </ul>
+//         <input onChange={onChangeP2} value={P2Action} disabled={!turnOfP2}></input>
+
+//         <button onClick={onClickP2}>확인</button>
+//         {dealer === 1 ? <div>dealer</div> : null}
+//       </div>
+
+
+//       <div>
+//         <h3>일형</h3>
+//         <span>스택: </span>
+//         <span>{P3Stack} </span>
+//         <ul>
+//           {player3_hand.map((card) => {
+//             return <li key={card}>{card}</li>
+//           })}
+//         </ul>
+//         <input onChange={onChangeP3} value={P3Action} disabled={!turnOfP3}></input>
+
+//         <button onClick={onClickP3}>확인</button>
+
+//         {dealer === 2 ? <div>dealer</div> : null}
+//       </div> */}
