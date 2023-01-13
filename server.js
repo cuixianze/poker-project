@@ -2,6 +2,7 @@
 const express = require('express');
 const path = require('path');
 const { send } = require('process');
+const PokerEvaluator = require('poker-evaluator');
 
 
 const app = express()
@@ -9,7 +10,7 @@ const app = express()
 var playerCount = 0;
 var info = {}
 var users = {}
-const DECK = ["AC", "2C", "3C", "4C", "5C", "6C", "7C", "8C", "9C", "10C", "JC", "QC", "KC", "AD", "2D", "3D", "4D", "5D", "6D", "7D", "8D", "9D", "10D", "JD", "QD", "KD", "AH", "2H", "3H", "4H", "5H", "6H", "7H", "8H", "9H", "10H", "JH", "QH", "KH", "AS", "2S", "3S", "4S", "5S", "6S", "7S", "8S", "9S", "10S", "JS", "QS", "KS"]
+const DECK = ["Ac", "2c", "3c", "4c", "5c", "6c", "7c", "8c", "9c", "Tc", "Jc", "Qc", "Kc", "Ad", "2d", "3d", "4d", "5d", "6d", "7d", "8d", "9d", "Td", "Jd", "Qd", "Kd", "Ah", "2h", "3h", "4h", "5h", "6h", "7h", "8h", "9h", "Th", "Jh", "Qh", "Kh", "As", "2s", "3s", "4s", "5s", "6s", "7s", "8s", "9s", "Ts", "Js", "Qs", "Ks"]
 
 
 var bettingLine = []
@@ -21,6 +22,7 @@ var board = []
 
 const smallBlind = 500
 const bigBlind = 1000
+
 
 
 function shuffle(array) {
@@ -64,6 +66,71 @@ function checkEnd(x, users) {
             }
             return state;
         }
+    }
+};
+
+function reset_info(info){
+    let idx=0;
+    for(let key in info.users){
+        if (info.users[key].pos===1){
+            info.users[key].pos=0;
+            idx = toString(parseInt(key)+1)
+        }
+        info.users[key].cards = [];
+    }
+    info.users[idx%(info.users.length)].pos=1;
+    info.gameState = 0;
+    info.board = [];
+    info.pot = 0;
+
+    return info;
+}
+
+function gameover(info, betline){
+    //남아있는 사람수 1명일때 -> 스택만 높이고 싹다 초기화
+    let num=0;
+    let idx = [];
+    for (let i=0 ; i<betline.length ; i++){
+        if (betline[i][0]===1){
+            num++;
+            idx.push(toString(i)); //i를 스트링으로 바꿔야됨
+        }
+    }
+    //한명남아서 게임종료
+    if (num===1){
+        //스택 저장
+        info.users[idx[0]].stack += info.pot;
+        //나머지들 초기화
+        info = reset_info(info);
+        return info;
+    }
+    //리버끝나고 왔을때
+    else{
+        let winer_idx = [];
+        let max_value = -1
+        //winer_idx에 이긴놈(들) 저장되어있음
+        idx.forEach((idx) => {
+            //함수불러서 핸드밸류 조사 -> 핸드밸류비교후 같은놈 있는지 체크
+            let x = PokerEvaluator.evalHand([...board, ...info.users[idx].cards])
+            if (x.value > max_value){
+                winer_idx = [];
+                winer_idx.push(idx);
+                max_value = x.value
+            }else if(x.value===max_value){
+                winer_idx.push(idx);
+            }
+        })
+        //스택에 저장
+        if (winer_idx.length===1){
+            info.users[winer_idx[0]].stack +=  info.pot;
+        }
+        else{
+            winer_idx.forEach((idx)=>{
+                info.users[idx].stack +=  info.pot/parseInt(winer_idx.length);
+            })
+        }
+        info = reset_info(info);
+        return info;
     }
 };
 
@@ -221,7 +288,6 @@ app.post('/api/action', (req, res) => {
         console.log(info.gameState)
         res.send(JSON.stringify(info))
     } else {
-        //게임끝 
     }
 
 
