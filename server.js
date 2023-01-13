@@ -2,6 +2,8 @@
 const express = require('express');
 const path = require('path');
 const { send } = require('process');
+const PokerEvaluator =  require('poker-evaluator');
+
 
 
 const app = express()
@@ -118,15 +120,10 @@ function resetInfo(info) {
         info.users[key].cards = [];
     }
     const keyList = Object.keys(users)
-    console.log("=============", info.users[idx % (keyList.length)])
-    console.log(keyList.length)
-    console.log(idx % (keyList.length))
-    console.log(typeof (idx % (keyList.length)))
     info.users[idx % (keyList.length)].pos = 1;
     info.gameState = 0;
     info.board = [];
     info.pot = 0;
-    console.log("여기까지")
     return info;
 }
 
@@ -146,8 +143,6 @@ function gameOver(info, betline) {
     if (num === 1) {
         console.log("한명남아서 종료할예정")
         //스택 저장
-        console.log(idx)
-        console.log(info.users[idx[0]])
         info.users[idx[0]].stack += info.pot;
         //나머지들 초기화
         info = resetInfo(info);
@@ -182,7 +177,7 @@ function gameOver(info, betline) {
         }
 
         info = resetInfo(info);
-        info.finished = winer_idx
+        info.finished = winer_idx;
         return info;
     }
 };
@@ -296,7 +291,6 @@ app.post('/api/action', (req, res) => {
         bettingLine[req.body.who] = [1, parseInt(req.body.action)]
 
     }
-    console.log(info.users, "===")
 
     var checkE = checkEnd(req.body.who, bettingLine)
     console.log("누구차례", checkE)
@@ -317,15 +311,17 @@ app.post('/api/action', (req, res) => {
 
     } else if (checkE[0] === 0) {
         //리버인상태에서 스트릿종료가될때
-        if (gameState === 3) {
+        console.log("글로벌변수 : ",gameState, "  info : ",info.gameState );
+        if (info.gameState === 3) {
+            console.log('여기는 옴?');
             info = gameOver(info, bettingLine)
             bettingLine = [];
-            console.log(info)
+            console.log('여기를 안왔나?');
 
             res.send(JSON.stringify(info))
         } else {
             //여기에 도착을 안함
-            console.log("before", info)
+            console.log("리버아닌데 끝");
             var keyList = Object.keys(users);
             info.gameState = info.gameState + 1
 
