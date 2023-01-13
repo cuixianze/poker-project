@@ -1,7 +1,7 @@
 import axios from "axios"
 import { useState } from "react"
 
-function Action({ userIdx, COC, setUsers, setStreet }) {
+function Action({ userIdx, COC, setUsers, setStreet, setPot, setFinished }) {
 
     const [isRaise, setIsRaise] = useState(false)
     const [raiseSize, setRaiseSize] = useState(0)
@@ -27,6 +27,8 @@ function Action({ userIdx, COC, setUsers, setStreet }) {
             console.log(c.data)
             setUsers(c.data.users)
             setStreet(c.data.gameState)
+            setPot(c.data.pot)
+            setFinished(c.data.finished)
         })
     }
     const makeRaise = () => {
@@ -38,6 +40,9 @@ function Action({ userIdx, COC, setUsers, setStreet }) {
             console.log(c.data)
             setUsers(c.data.users)
             setStreet(c.data.gameState)
+            setPot(c.data.pot)
+            setFinished(c.data.finished)
+
         })
     }
     const makeFold = () => {
@@ -49,6 +54,9 @@ function Action({ userIdx, COC, setUsers, setStreet }) {
             console.log(c.data)
             setUsers(c.data.users)
             setStreet(c.data.gameState)
+            setPot(c.data.pot)
+            setFinished(c.data.finished)
+            console.log(c.data)
         })
     }
 

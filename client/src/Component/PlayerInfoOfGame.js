@@ -3,7 +3,7 @@ import Hand from './Hand';
 import Action from './Action';
 
 
-function PlayerInfoOfGame({ sitN, users, setUsers, setStreet }) {
+function PlayerInfoOfGame({ sitN, users, setUsers, setStreet, setPot, setFinished }) {
 
     const [isS, setIsS] = useState(false)
     const [userIdx, setUserIdx] = useState("")
@@ -37,7 +37,7 @@ function PlayerInfoOfGame({ sitN, users, setUsers, setStreet }) {
                 {users[userIdx].isyourturn === 0 ?
                     null :
                     <div>
-                        <Action userIdx={userIdx} COC={users[userIdx].isyourturn} setUsers={setUsers} setStreet={setStreet} />
+                        <Action userIdx={userIdx} COC={users[userIdx].isyourturn} setUsers={setUsers} setStreet={setStreet} setPot={setPot} setFinished={setFinished} />
                         {/* COC는CHECK OR CALL */}
                     </div>}
 

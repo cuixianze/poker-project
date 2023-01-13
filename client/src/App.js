@@ -28,18 +28,23 @@ function App() {
   const [users, setUsers] = useState("")
   const [board, setBoard] = useState()
   const [street, setstreet] = useState(0)
+  const [pot, setPot] = useState(0)
+  const [finished, setFinished] = useState()
 
+  const func = (board, users, gameState, pot, finished) => {
 
-  const func = (board) => {
-    console.log("실행됨")
     setBoard(board)
-    console.log(board)
+    setUsers(users)
+    setstreet(parseInt(gameState))
+    setPot(pot)
+    setFinished(finished)
+
   }
   const startHandler = async () => {
     await axios.post('/api/startGame/').then(res => {
-      setUsers(res.data.users)
-      setstreet(res.data.gamaState);
-      func(res.data.board)
+      func(res.data.board, res.data.users, res.data.gamaState, res.data.pot, res.data.finished)
+      console.log("*", res.data.finished)
+      if (res.data.finished != 0) { console.log("되긴함") }
     })
     // await axios.post('/api/board')//보드 5장을 한번에 받아옴
     setGameStart(true)
@@ -47,26 +52,49 @@ function App() {
   }
 
 
+  useEffect(() => {
+    if (finished) {
+      setTimeout(() => {
+        startHandler()
+        console.log("여긴가")
+      }, 5000)
+
+    }
+  }, [finished])
+
+
+
+
 
 
   return (
     <div>
       <div>{JSON.stringify(users)}</div>
-      <div>
-        {street === 0 ? null : (
-          (street === 1) ? "플랍" : (
-            (street === 2) ? "턴" : "리버"
+      <h1>
+        {street === 1 ? board.slice(0, 3) : (
+          (street === 2) ? board.slice(0, 4) : (
+            (street === 3) ? board.slice(0, 5) : null
           )
         )
 
         }
-      </div>
+      </h1>
       {GameStart ?
         <div>
-          <PlayerInfoOfGame sitN={1} users={users} setUsers={setUsers} setStreet={setstreet} />
-          <PlayerInfoOfGame sitN={2} users={users} setUsers={setUsers} setStreet={setstreet} />
-          <PlayerInfoOfGame sitN={3} users={users} setUsers={setUsers} setStreet={setstreet} />
-          <PlayerInfoOfGame sitN={4} users={users} setUsers={setUsers} setStreet={setstreet} />
+          {finished ?
+            <div>
+              <p>위너는 {users[finished].id} 입니다</p>
+            </div>
+            :
+            <div>
+              <h2>pot:{pot}</h2>
+              <PlayerInfoOfGame sitN={1} users={users} setUsers={setUsers} setStreet={setstreet} setPot={setPot} setFinished={setFinished} />
+              <PlayerInfoOfGame sitN={2} users={users} setUsers={setUsers} setStreet={setstreet} setPot={setPot} setFinished={setFinished} />
+              <PlayerInfoOfGame sitN={3} users={users} setUsers={setUsers} setStreet={setstreet} setPot={setPot} setFinished={setFinished} />
+              <PlayerInfoOfGame sitN={4} users={users} setUsers={setUsers} setStreet={setstreet} setPot={setPot} setFinished={setFinished} />
+            </div>
+          }
+
 
           <div>
 
