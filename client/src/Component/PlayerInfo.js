@@ -22,7 +22,8 @@ function PlayerInfo({ sitNum }) {
 
         const data = {
             "id": id,
-            "stack": stack
+            "stack": stack,
+            "sitNum": sitNum,
         };
 
         axios.post('/api/playerInfo', data).then(data => {
