@@ -11,8 +11,16 @@ const app = express()
 var playerCount = 0;
 var users = {}
 const DECK = ["Ac", "2c", "3c", "4c", "5c", "6c", "7c", "8c", "9c", "Tc", "Jc", "Qc", "Kc", "Ad", "2d", "3d", "4d", "5d", "6d", "7d", "8d", "9d", "Td", "Jd", "Qd", "Kd", "Ah", "2h", "3h", "4h", "5h", "6h", "7h", "8h", "9h", "Th", "Jh", "Qh", "Kh", "As", "2s", "3s", "4s", "5s", "6s", "7s", "8s", "9s", "Ts", "Js", "Qs", "Ks"]
+const img_board = {"Ac":["/image/AC.png"], "2c":["/image/2C.png"], "3c":["/image/3C.png"], "4c":["/image/4C.png"], "5c":["/image/5C.png"], "6c":["/image/6C.png"], "7c":["/image/7C.png"], "8c":["/image/8C.png"], "9c":["/image/9C.png"], "Tc":["/image/TC.png"], "Jc":["/image/JC.png"], "Qc":["/image/QC.png"], "Kc":["/image/KC.png"],
+                    "Ad":["/image/AD.png"], "2d":["/image/2D.png"], "3d":["/image/3D.png"], "4d":["/image/4D.png"], "5d":["/image/5D.png"], "6d":["/image/6D.png"], "7d":["/image/7D.png"], "8d":["/image/8D.png"], "9d":["/image/9D.png"], "Td":["/image/TD.png"], "Jd":["/image/JD.png"], "Qd":["/image/QD.png"], "Kd":["/image/KD.png"],
+                    "Ah":["/image/AH.png"], "2h":["/image/2H.png"], "3h":["/image/3H.png"], "4h":["/image/4H.png"], "5h":["/image/5H.png"], "6h":["/image/6H.png"], "7h":["/image/7H.png"], "8h":["/image/8H.png"], "9h":["/image/9H.png"], "Th":["/image/TH.png"], "Jh":["/image/JH.png"], "Qh":["/image/QH.png"], "Kh":["/image/KH.png"], 
+                    "As":["/image/AS.png"], "2s":["/image/2S.png"], "3s":["/image/3S.png"], "4s":["/image/4S.png"], "5s":["/image/5S.png"], "6s":["/image/6S.png"], "7s":["/image/7S.png"], "8s":["/image/8S.png"], "9s":["/image/9S.png"], "Ts":["/image/TS.png"], "Js":["/image/JS.png"], "Qs":["/image/QS.png"], "Ks":["/image/KS.png"]}
+
+
 
 var bettingLine = []
+
+
 
 var dealer = -1
 var turnOfWho = -1
@@ -238,16 +246,12 @@ app.post('/api/startGame', (req, res) => {
             dealer = parseInt(key)
         }
     }
-    console.log("푸쉬한후 베팅라인", bettingLine)
-
     bettingLine[(dealer + 1) % (keyList.length)] = [0, smallBlind];
     bettingLine[(dealer + 2) % (keyList.length)] = [0, bigBlind];
     setUserStack(users, smallBlind, (dealer + 1) % (keyList.length))
     setUserStack(users, bigBlind, (dealer + 2) % (keyList.length))
     turnOfWho = (parseInt(dealer) + 3) % (keyList.length)
 
-    console.log(dealer)
-    console.log("지금은 *턴입니다", turnOfWho)
     for (key in keyList) {
         const isyourturn = "isyourturn"
         if (turnOfWho === parseInt(key)) {
@@ -258,7 +262,8 @@ app.post('/api/startGame', (req, res) => {
             users[key][isyourturn] = 0
         }
     }
-
+    console.log("시작전 모든정보", info);
+    //여기서 보드 보내기전에 함수돌려서 카드 -> 이미지 링크or 이미지파일로 변환후 리액트로 보냄
     res.send(JSON.stringify(info))
 })
 
@@ -267,7 +272,6 @@ app.post('/api/startGame', (req, res) => {
 
 
 app.post('/api/action', (req, res) => {
-    console.log("액션할때 배팅라인", bettingLine)
     //bettingLine 수전
     if (req.body.action === 'call') {
         var max_bet = -1
@@ -293,7 +297,6 @@ app.post('/api/action', (req, res) => {
     }
 
     var checkE = checkEnd(req.body.who, bettingLine)
-    console.log("누구차례", checkE)
     if (checkE[0] === 1) {
 
         var keyList = Object.keys(users);
@@ -313,15 +316,12 @@ app.post('/api/action', (req, res) => {
         //리버인상태에서 스트릿종료가될때
         console.log("글로벌변수 : ",gameState, "  info : ",info.gameState );
         if (info.gameState === 3) {
-            console.log('여기는 옴?');
             info = gameOver(info, bettingLine)
             bettingLine = [];
-            console.log('여기를 안왔나?');
-
+            console.log("리셋후 info; ", info);
             res.send(JSON.stringify(info))
         } else {
             //여기에 도착을 안함
-            console.log("리버아닌데 끝");
             var keyList = Object.keys(users);
             info.gameState = info.gameState + 1
 
@@ -338,8 +338,6 @@ app.post('/api/action', (req, res) => {
                     info.users[key][isyourturn] = 0
                 }
             }
-            console.log("after", info)
-
             res.send(JSON.stringify(info))
         }
 
@@ -347,7 +345,7 @@ app.post('/api/action', (req, res) => {
         //게임끝 
         info = gameOver(info, bettingLine)
         bettingLine = [];
-        console.log(info)
+        console.log("리셋후 info; ", info)
         res.send(JSON.stringify(info))
     }
 
